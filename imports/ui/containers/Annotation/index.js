@@ -1,36 +1,42 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Link } from 'react-router';
 import { Tweets } from '../../../api/tweets';
 
-const Annotation = (props) => {
+class Annotation extends React.Component {
 
-  if (!props.currentUser) {
-    return <div><h1>Please log in</h1></div>;
+  constructor(props) {
+    super(props);
+    this.state = {
+      tweets: props.tweets || [],
+      currentTweetIndex: 0,
+    };
   }
 
-  console.log(props.tweets);
+  render() {
+    if (!this.props.currentUser) {
+      return <div><h1>Please log in</h1></div>;
+    }
 
-  return (
-    <div>
-      <h1>Annotation!</h1>
-      {props.tweets.map(tweet => <p>{tweet.text}</p>)}
-    </div>
-  );
-};
+    return (
+      <div>
+        <h1>Annotation!</h1>
+        {this.props.tweets.map(tweet => <p key={tweet._id}>{tweet.text}</p>)}
+      </div>
+    );
+  }
+}
 
 Annotation.propTypes = {
   currentUser: PropTypes.object,
-  tweets: PropTypes.arrayOf(PropTypes.object)
+  tweets: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default createContainer(() => {
-
   Meteor.subscribe('tweets');
 
   return {
     currentUser: Meteor.user(),
-    tweets: Tweets.find().fetch()
+    tweets: Tweets.find().fetch(),
   };
 }, Annotation);
