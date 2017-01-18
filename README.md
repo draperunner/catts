@@ -11,5 +11,6 @@ Then install the project:
 ```bash
 git clone git@github.com:draperunner/catts.git
 cd catts
+npm install
 meteor
 ```
