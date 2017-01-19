@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Link } from 'react-router';
 import { Button } from 'antd';
 
-const Welcome = props => (
+const Welcome = () => (
   <div>
     <h1>Welcome!</h1>
     <p>Annotating tweets is a cool thing to do. Are you ready?</p>

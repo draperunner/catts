@@ -1,21 +1,11 @@
-import React, { PropTypes } from 'react';
-import { Meteor } from 'meteor/meteor';
+import React from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Link } from 'react-router';
 
-const Help = (props) => {
+const Help = () => (
+  <div>
+    <h1>Help!</h1>
+  </div>
+);
 
-  return (
-    <div>
-      <h1>Help!</h1>
-    </div>
-  );
-};
-
-Help.propTypes = {
-};
-
-export default createContainer(() => {
-  return {
-  };
-}, Help);
+export default createContainer(() => ({
+}), Help);
