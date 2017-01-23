@@ -7,7 +7,9 @@ import { createContainer } from 'meteor/react-meteor-data';
   */
 
 const AnnotationCounter = (props) => {
-  if (!props.currentUser) return null;
+  if (!props.currentUser || !props.currentUser.profile || !props.currentUser.profile.annotations) {
+    return null;
+  }
 
   const annotations = props.currentUser.profile.annotations;
 

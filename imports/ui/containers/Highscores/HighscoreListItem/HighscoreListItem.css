@@ -1,0 +1,8 @@
+.highscore-list-item {
+  margin: 10px 0;
+}
+
+.highscore-list-item h3 {
+  display: inline;
+  margin-left: 20px;
+}

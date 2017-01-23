@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Layout, Menu } from 'antd';
 import AccountsUIWrapper from '../../components/AccountsUIWrapper';
+import '../../../startup/accounts-config.js';
 import './App.css';
 
 const { Header, Content, Footer } = Layout;
