@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Button } from 'antd';
+import { Button, Radio } from 'antd';
 import { Tweets } from '../../../api/tweets';
 import AnnotationCounter from '../../components/AnnotationCounter';
 
@@ -11,17 +11,40 @@ class Annotation extends React.Component {
     super(props);
     this.state = {
       tweets: props.tweets || [],
-      currentTweetIndex: 0,
+      currentTweetIndex: -1,
+      currentTweet: null,
+      annotations: {},
     };
   }
 
-  annotate(tweetId, sentiment) {
-    this.setState({
-      currentTweetIndex: (this.state.currentTweetIndex + 1) % this.props.tweets.length,
-    });
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.tweets.length && nextProps.tweets.length) {
+      this.setState({
+        tweets: nextProps.tweets || [],
+        currentTweetIndex: 0,
+        currentTweet: nextProps.tweets[0],
+      });
+    }
+  }
 
-    Meteor.call('tweets.annotate', tweetId, sentiment);
-    Meteor.call('user.addAnnotation', tweetId, sentiment);
+  next() {
+    Meteor.call('tweets.annotate', this.state.currentTweet._id, this.state.annotations);
+    Meteor.call('user.addAnnotation', this.state.currentTweet._id, this.state.annotations);
+    const nextIndex = (this.state.currentTweetIndex + 1) % this.props.tweets.length;
+    this.setState({
+      currentTweetIndex: nextIndex,
+      currentTweet: this.props.tweets[nextIndex],
+      annotations: {},
+    });
+  }
+
+  annotate(type, annotation) {
+    const annotations = { ...this.state.annotations };
+    annotations[type] = annotation;
+
+    this.setState({
+      annotations,
+    });
   }
 
   render() {
@@ -29,15 +52,30 @@ class Annotation extends React.Component {
       return <div><h1>Please log in</h1></div>;
     }
 
-    const tweet = this.props.tweets[this.state.currentTweetIndex];
+    const tweet = this.state.currentTweet;
 
     return (
       <div>
         <h1>Annotation!</h1>
-        { tweet ? <p key={tweet._id}>{tweet.text}</p> : null }
-        <Button onClick={() => this.annotate(tweet._id, 'positive')}>Positive</Button>
-        <Button onClick={() => this.annotate(tweet._id, 'neutral')}>Neutral</Button>
-        <Button onClick={() => this.annotate(tweet._id, 'negative')}>Negative</Button>
+        <h3>{ tweet ? <p key={tweet._id}>{tweet.text}</p> : null }</h3>
+        <div>
+          <Radio.Group value={this.state.annotations.sentiment} size="large" onChange={e => this.annotate('sentiment', e.target.value)}>
+            <Radio.Button value="positive" >Positive</Radio.Button>
+            <Radio.Button value="neutral">Neutral</Radio.Button>
+            <Radio.Button value="negative" >Negative</Radio.Button>
+            <Radio.Button value="none">I don't know</Radio.Button>
+          </Radio.Group>
+        </div>
+        <div>
+          <Radio.Group value={this.state.annotations.sarcasm} size="large" onChange={e => this.annotate('sarcasm', e.target.value)}>
+            <Radio.Button value="sarcastic">Sarcastic</Radio.Button>
+            <Radio.Button value="not-sarcastic" >Not Sarcastic</Radio.Button>
+            <Radio.Button value="none">I don't know</Radio.Button>
+          </Radio.Group>
+        </div>
+        <div>
+          <Button type="primary" onClick={() => this.next()}>Next</Button>
+        </div>
         <div>
           <h1>
             <AnnotationCounter />

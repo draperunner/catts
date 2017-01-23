@@ -18,9 +18,9 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'user.addAnnotation'(tweetId, sentiment) {
+  'user.addAnnotation'(tweetId, annotations) {
     check(tweetId, String);
-    check(sentiment, String);
+    check(annotations, Object);
 
     // Make sure the user is logged in before inserting a wishlist
     if (!this.userId) {
@@ -30,11 +30,13 @@ Meteor.methods({
     // Push detailed annotation object
     // Increment aggregated annotation stats for convenience
     const updateObject = {
-      $push: { 'profile.annotations.detailed': { tweetId, sentiment } },
+      $push: { 'profile.annotations.detailed': { tweetId, annotations } },
       $inc: { 'profile.annotations.aggregated.count': 1 },
     };
 
-    updateObject.$inc[`profile.annotations.aggregated.${sentiment}`] = 1;
+    Object.keys(annotations).forEach((type) => {
+      updateObject.$inc[`profile.annotations.aggregated.${type}.${annotations[type]}`] = 1;
+    });
 
     Meteor.users.update({ _id: this.userId }, updateObject);
   },
