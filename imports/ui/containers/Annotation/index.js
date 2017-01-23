@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
+import { Button } from 'antd';
 import { Tweets } from '../../../api/tweets';
 
 class Annotation extends React.Component {
@@ -13,15 +14,27 @@ class Annotation extends React.Component {
     };
   }
 
+  annotate(tweetId, annotation) {
+    console.log(tweetId, annotation);
+    this.setState({
+      currentTweetIndex: (this.state.currentTweetIndex + 1) % this.props.tweets.length,
+    });
+  }
+
   render() {
     if (!this.props.currentUser) {
       return <div><h1>Please log in</h1></div>;
     }
 
+    const tweet = this.props.tweets[this.state.currentTweetIndex];
+
     return (
       <div>
         <h1>Annotation!</h1>
-        {this.props.tweets.map(tweet => <p key={tweet._id}>{tweet.text}</p>)}
+        { tweet ? <p key={tweet._id}>{tweet.text}</p> : null }
+        <Button onClick={() => this.annotate(tweet._id, 'positive')}>Positive</Button>
+        <Button onClick={() => this.annotate(tweet._id, 'neutral')}>Neutral</Button>
+        <Button onClick={() => this.annotate(tweet._id, 'negative')}>Negative</Button>
       </div>
     );
   }
