@@ -14,11 +14,12 @@ class Annotation extends React.Component {
     };
   }
 
-  annotate(tweetId, annotation) {
-    console.log(tweetId, annotation);
+  annotate(tweetId, sentiment) {
     this.setState({
       currentTweetIndex: (this.state.currentTweetIndex + 1) % this.props.tweets.length,
     });
+
+    Meteor.call('tweets.annotate', tweetId, sentiment);
   }
 
   render() {

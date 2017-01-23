@@ -10,15 +10,24 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'tweets.annotate'(tweetId, annotation) {
+  'tweets.annotate'(tweetId, sentiment) {
     check(tweetId, String);
-    check(annotation, String);
+    check(sentiment, String);
 
     // Make sure the user is logged in before saving annotation
     if (!this.userId) {
       throw new Meteor.Error('not-authorized');
     }
 
-    // Tweets.update(tweetId, { $set: {} });
+    // Push detailed annotation object including user info
+    // Increment aggregated annotation stats for convenience
+    const updateObject = {
+      $push: { 'annotations.detailed': { user: this.userId, sentiment } },
+      $inc: { 'annotations.aggregated.count': 1 },
+    };
+
+    updateObject.$inc[`annotations.aggregated.${sentiment}`] = 1;
+
+    Tweets.update(tweetId, updateObject);
   },
 });
