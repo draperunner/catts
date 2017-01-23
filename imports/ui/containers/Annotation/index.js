@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Button } from 'antd';
 import { Tweets } from '../../../api/tweets';
+import AnnotationCounter from '../../components/AnnotationCounter';
 
 class Annotation extends React.Component {
 
@@ -20,6 +21,7 @@ class Annotation extends React.Component {
     });
 
     Meteor.call('tweets.annotate', tweetId, sentiment);
+    Meteor.call('user.addAnnotation', tweetId, sentiment);
   }
 
   render() {
@@ -36,6 +38,11 @@ class Annotation extends React.Component {
         <Button onClick={() => this.annotate(tweet._id, 'positive')}>Positive</Button>
         <Button onClick={() => this.annotate(tweet._id, 'neutral')}>Neutral</Button>
         <Button onClick={() => this.annotate(tweet._id, 'negative')}>Negative</Button>
+        <div>
+          <h1>
+            <AnnotationCounter />
+          </h1>
+        </div>
       </div>
     );
   }
