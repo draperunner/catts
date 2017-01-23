@@ -1,30 +1,16 @@
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Layout, Menu } from 'antd';
-import AccountsUIWrapper from '../../components/AccountsUIWrapper';
+import { Layout } from 'antd';
+import Header from '../../components/Header';
 import '../../../startup/accounts-config.js';
 import './App.css';
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 
 // App component - represents the whole app
 const App = props =>
   <Layout className="layout">
-    <Header>
-      <div className="logo" />
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        defaultSelectedKeys={['2']}
-        style={{ lineHeight: '64px' }}
-      >
-        <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
-        <Menu.Item key="2"><Link to="/highscores">Highscores</Link></Menu.Item>
-        <Menu.Item key="3"><Link to="/help">Help</Link></Menu.Item>
-        <Menu.Item key="4"><AccountsUIWrapper /></Menu.Item>
-      </Menu>
-    </Header>
+    <Header />
     <Content style={{ padding: '0 50px' }}>
       <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
         { props.children }
