@@ -5,8 +5,10 @@ import { check } from 'meteor/check';
 export const Tweets = new Mongo.Collection('tweets');
 
 if (Meteor.isServer) {
-  // This code only runs on the server
-  Meteor.publish('tweets', () => Tweets.find());
+  // This will only expose tweets that are not annotated by current user
+  Meteor.publish('tweets', function () {
+    return Tweets.find({ 'annotations.detailed.user': { $ne: this.userId } }, { limit: 5 });
+  });
 }
 
 Meteor.methods({
@@ -26,7 +28,9 @@ Meteor.methods({
       $inc: { 'annotations.aggregated.count': 1 },
     };
 
-    // updateObject.$inc[`annotations.aggregated.${type}.${annotation}`] = 1;
+    Object.keys(annotations).forEach((type) => {
+      updateObject.$inc[`annotations.aggregated.${type}.${annotations[type]}`] = 1;
+    });
 
     Tweets.update(tweetId, updateObject);
   },

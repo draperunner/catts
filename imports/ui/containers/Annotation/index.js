@@ -1,39 +1,48 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { Button, Radio } from 'antd';
 import { Tweets } from '../../../api/tweets';
 import AnnotationCounter from '../../components/AnnotationCounter';
 
 class Annotation extends React.Component {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      tweets: props.tweets || [],
-      currentTweetIndex: -1,
+      tweets: [],
       currentTweet: null,
       annotations: {},
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.tweets.length && nextProps.tweets.length) {
-      this.setState({
-        tweets: nextProps.tweets || [],
-        currentTweetIndex: 0,
-        currentTweet: nextProps.tweets[0],
-      });
+    if (!this.state.tweets.length || this.state.tweets.length < 3) {
+      const currTweets = this.state.tweets;
+      const newTweets = nextProps.tweets.filter(t => currTweets.map(ct => ct._id).indexOf(t._id) < 0);
+
+      const newState = {
+        tweets: [...currTweets, ...newTweets],
+      };
+
+      if (this.state.tweets.length === 0) {
+        newState.tweets = newState.tweets.slice(1);
+        newState.currentTweet = nextProps.tweets[0];
+      }
+
+      this.setState(newState);
     }
   }
 
   next() {
     Meteor.call('tweets.annotate', this.state.currentTweet._id, this.state.annotations);
     Meteor.call('user.addAnnotation', this.state.currentTweet._id, this.state.annotations);
-    const nextIndex = (this.state.currentTweetIndex + 1) % this.props.tweets.length;
+    const newTweets = this.state.tweets.slice();
+    const newCurrentTweet = newTweets.shift();
     this.setState({
-      currentTweetIndex: nextIndex,
-      currentTweet: this.props.tweets[nextIndex],
+      tweets: newTweets,
+      currentTweet: newCurrentTweet,
       annotations: {},
     });
   }
@@ -54,9 +63,20 @@ class Annotation extends React.Component {
 
     const tweet = this.state.currentTweet;
 
+    const title = 'Annotation!';
+
+    if (!this.state.tweets.length) {
+      return (
+        <div>
+          <h1>{title}</h1>
+          <h3>No available tweets! You must have annotated them all. Great job!</h3>
+        </div>
+      );
+    }
+
     return (
       <div>
-        <h1>Annotation!</h1>
+        <h1>{title}</h1>
         <h3>{ tweet ? <p key={tweet._id}>{tweet.text}</p> : null }</h3>
         <div>
           <Radio.Group value={this.state.annotations.sentiment} size="large" onChange={e => this.annotate('sentiment', e.target.value)}>
@@ -88,14 +108,16 @@ class Annotation extends React.Component {
 
 Annotation.propTypes = {
   currentUser: PropTypes.object,
-  tweets: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default createContainer(() => {
-  Meteor.subscribe('tweets');
+  const reactiveTweets = new ReactiveVar(Tweets.find().fetch());
+
+  // This will only return tweets that are not annotated by current user
+  Meteor.subscribe('tweets', reactiveTweets);
 
   return {
     currentUser: Meteor.user(),
-    tweets: Tweets.find().fetch(),
+    tweets: reactiveTweets.curValue,
   };
 }, Annotation);
