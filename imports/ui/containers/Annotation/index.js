@@ -79,7 +79,11 @@ class Annotation extends React.Component {
         <h1>{title}</h1>
         <h3>{ tweet ? <p key={tweet._id}>{tweet.text}</p> : null }</h3>
         <div>
-          <Radio.Group value={this.state.annotations.sentiment} size="large" onChange={e => this.annotate('sentiment', e.target.value)}>
+          <Radio.Group
+            value={this.state.annotations.sentiment}
+            size="large"
+            onChange={e => this.annotate('sentiment', e.target.value)}
+          >
             <Radio.Button value="positive" >Positive</Radio.Button>
             <Radio.Button value="neutral">Neutral</Radio.Button>
             <Radio.Button value="negative" >Negative</Radio.Button>
@@ -87,7 +91,11 @@ class Annotation extends React.Component {
           </Radio.Group>
         </div>
         <div>
-          <Radio.Group value={this.state.annotations.sarcasm} size="large" onChange={e => this.annotate('sarcasm', e.target.value)}>
+          <Radio.Group
+            value={this.state.annotations.sarcasm}
+            size="large"
+            onChange={e => this.annotate('sarcasm', e.target.value)}
+          >
             <Radio.Button value="sarcastic">Sarcastic</Radio.Button>
             <Radio.Button value="not-sarcastic" >Not Sarcastic</Radio.Button>
             <Radio.Button value="none">I don't know</Radio.Button>

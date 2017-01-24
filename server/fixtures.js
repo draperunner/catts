@@ -1,3 +1,4 @@
+/* eslint-disable */
 const mockTweets = [
   {
     _id: '57fd317cf8f2a0411e488436',

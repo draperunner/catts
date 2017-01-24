@@ -6,7 +6,7 @@ export const Tweets = new Mongo.Collection('tweets');
 
 if (Meteor.isServer) {
   // This will only expose tweets that are not annotated by current user
-  Meteor.publish('tweets', function () {
+  Meteor.publish('tweets', function tweetsPublish() {
     return Tweets.find({ 'annotations.detailed.user': { $ne: this.userId } }, { limit: 5 });
   });
 }
