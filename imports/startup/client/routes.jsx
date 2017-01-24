@@ -7,6 +7,7 @@ import Welcome from '../../ui/containers/Welcome';
 import Highscores from '../../ui/containers/Highscores';
 import Help from '../../ui/containers/Help';
 import Annotation from '../../ui/containers/Annotation';
+import Download from '../../ui/containers/Download';
 
 export const renderRoutes = () => (
   <Router history={browserHistory}>
@@ -15,6 +16,7 @@ export const renderRoutes = () => (
       <Route path="/highscores" component={Highscores} />
       <Route path="/help" component={Help} />
       <Route path="/annotate" component={Annotation} />
+      <Route path="/download" component={Download} />
     </Route>
   </Router>
 );
