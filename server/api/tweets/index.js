@@ -6,7 +6,7 @@ import { statusesLookup } from './twitter';
 
 // This will only expose tweets that are not annotated by current user
 Meteor.publish('tweets', function tweetsPublish() {
-  const tweets = Tweets.find({ 'annotations.detailed.user': { $ne: this.userId } }, { limit: 100 });
+  const tweets = Tweets.find({ 'annotations.detailed.user': { $ne: this.userId } }, { limit: 40 });
   const self = this;
   statusesLookup(tweets)
     .then((fullTweets) => {
