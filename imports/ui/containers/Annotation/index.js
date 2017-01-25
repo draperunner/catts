@@ -31,9 +31,6 @@ class Annotation extends React.Component {
       if (this.state.tweets.length === 0 && this.state.doneTweets.length === 0) {
         newState.tweets = newState.tweets.slice(1);
         newState.currentTweet = nextProps.tweets[0];
-      } else if (this.state.tweets.length === 0 && this.state.doneTweets.length > 0) {
-        // Hack to reload the subscription to 'tweets'
-        window.location.reload();
       }
 
       this.setState(newState);
@@ -52,6 +49,11 @@ class Annotation extends React.Component {
       currentTweet: newCurrentTweet,
       annotations: {},
     });
+
+    // Hack to reload the subscription to 'tweets'
+    if (this.state.tweets.length < 10) {
+      Meteor.subscribe('tweets');
+    }
   }
 
   annotate(type, annotation) {
@@ -136,8 +138,10 @@ export default createContainer(() => {
   // This will only return tweets that are not annotated by current user
   Meteor.subscribe('tweets');
 
+  const tweets = Tweets.find().fetch();
+
   return {
     currentUser: Meteor.user(),
-    tweets: Tweets.find().fetch(),
+    tweets,
   };
 }, Annotation);
