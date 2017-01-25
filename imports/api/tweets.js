@@ -4,13 +4,6 @@ import { check } from 'meteor/check';
 
 export const Tweets = new Mongo.Collection('tweets');
 
-if (Meteor.isServer) {
-  // This will only expose tweets that are not annotated by current user
-  Meteor.publish('tweets', function tweetsPublish() {
-    return Tweets.find({ 'annotations.detailed.user': { $ne: this.userId } }, { limit: 5 });
-  });
-}
-
 Meteor.methods({
   'tweets.annotate'(tweetId, annotations) {
     check(tweetId, String);
@@ -32,6 +25,6 @@ Meteor.methods({
       updateObject.$inc[`annotations.aggregated.${type}.${annotations[type]}`] = 1;
     });
 
-    Tweets.update(tweetId, updateObject);
+    Tweets.update({ id_str: tweetId }, updateObject);
   },
 });

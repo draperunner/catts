@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { Button, Radio } from 'antd';
 import { Tweets } from '../../../api/tweets';
 import AnnotationCounter from '../../components/AnnotationCounter';
@@ -12,6 +11,7 @@ class Annotation extends React.Component {
     super();
     this.state = {
       tweets: [],
+      doneTweets: [],
       currentTweet: null,
       annotations: {},
     };
@@ -20,15 +20,20 @@ class Annotation extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!this.state.tweets.length || this.state.tweets.length < 3) {
       const currTweets = this.state.tweets;
-      const newTweets = nextProps.tweets.filter(t => currTweets.map(ct => ct._id).indexOf(t._id) < 0);
+      const doneTweets = this.state.doneTweets;
+      const newTweets = nextProps.tweets
+        .filter(t => [...doneTweets, ...currTweets].map(ct => ct.id_str).indexOf(t.id_str) < 0);
 
       const newState = {
         tweets: [...currTweets, ...newTweets],
       };
 
-      if (this.state.tweets.length === 0) {
+      if (this.state.tweets.length === 0 && this.state.doneTweets.length === 0) {
         newState.tweets = newState.tweets.slice(1);
         newState.currentTweet = nextProps.tweets[0];
+      } else if (this.state.doneTweets.length > 0) {
+        // Hack to reload the subscription to 'tweets'
+        window.location.reload();
       }
 
       this.setState(newState);
@@ -39,9 +44,11 @@ class Annotation extends React.Component {
     Meteor.call('tweets.annotate', this.state.currentTweet._id, this.state.annotations);
     Meteor.call('user.addAnnotation', this.state.currentTweet._id, this.state.annotations);
     const newTweets = this.state.tweets.slice();
+    const newDoneTweets = [...this.state.doneTweets, this.state.currentTweet];
     const newCurrentTweet = newTweets.shift();
     this.setState({
       tweets: newTweets,
+      doneTweets: newDoneTweets,
       currentTweet: newCurrentTweet,
       annotations: {},
     });
@@ -119,13 +126,11 @@ Annotation.propTypes = {
 };
 
 export default createContainer(() => {
-  const reactiveTweets = new ReactiveVar(Tweets.find().fetch());
-
   // This will only return tweets that are not annotated by current user
-  Meteor.subscribe('tweets', reactiveTweets);
+  Meteor.subscribe('tweets');
 
   return {
     currentUser: Meteor.user(),
-    tweets: reactiveTweets.curValue,
+    tweets: Tweets.find().fetch(),
   };
 }, Annotation);

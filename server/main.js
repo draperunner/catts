@@ -3,11 +3,11 @@ import { Tweets } from '../imports/api/tweets';
 import '../imports/api/all-users';
 import '../imports/api/user';
 
-import mockTweets from './fixtures';
+import fixtures from './fixtures-1000';
 
 Meteor.startup(() => {
   if (Tweets.find().count() === 0) {
-    mockTweets.forEach((tweet) => {
+    fixtures.forEach((tweet) => {
       Tweets.insert(tweet);
     });
   }
