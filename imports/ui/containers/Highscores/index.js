@@ -30,7 +30,7 @@ Highscores.propTypes = {
 
 export default createContainer(() => {
   Meteor.subscribe('allUsers');
-  const users = Meteor.users.find({}, { $sort: { 'profile.annotations.aggregated.count': -1 } }).fetch();
+  const users = Meteor.users.find({}, { sort: { 'profile.annotations.aggregated.count': -1 } }).fetch();
 
   return {
     users,
