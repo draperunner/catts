@@ -31,7 +31,7 @@ class Annotation extends React.Component {
       if (this.state.tweets.length === 0 && this.state.doneTweets.length === 0) {
         newState.tweets = newState.tweets.slice(1);
         newState.currentTweet = nextProps.tweets[0];
-      } else if (this.state.doneTweets.length > 0) {
+      } else if (this.state.tweets.length === 0 && this.state.doneTweets.length > 0) {
         // Hack to reload the subscription to 'tweets'
         window.location.reload();
       }
@@ -72,11 +72,18 @@ class Annotation extends React.Component {
 
     const title = 'Annotation!';
 
-    if (!this.state.tweets.length) {
+    if (!this.state.tweets.length && this.state.doneTweets.length > 0) {
       return (
         <div>
           <h1>{title}</h1>
           <h3>No available tweets! You must have annotated them all. Great job!</h3>
+        </div>
+      );
+    } else if (!this.state.tweets.length && this.state.doneTweets.length === 0) {
+      return (
+        <div>
+          <h1>{title}</h1>
+          <h3>Loading tweets...</h3>
         </div>
       );
     }
