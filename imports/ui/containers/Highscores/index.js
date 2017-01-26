@@ -9,9 +9,12 @@ const getAnnotationCount = (user) => {
 };
 
 const Highscores = props => (
-  <div>
-    <h1>Highscores!</h1>
-    {
+  <div className="row">
+    <div className="col-xs-12">
+      <h1>Highscores</h1>
+    </div>
+    <div className="col-xs-12">
+      {
       props.users.map((user, rank) => (
         <HighscoreListItem
           key={user._id}
@@ -21,6 +24,7 @@ const Highscores = props => (
         />
       ))
     }
+    </div>
   </div>
 );
 

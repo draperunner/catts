@@ -1,26 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { Layout, Menu } from 'antd';
 import AccountsUIWrapper from '../../components/AccountsUIWrapper';
-
-const AntHeader = Layout.Header;
+import './Header.css';
 
 const Header = () => (
-  <AntHeader>
-    <div className="logo" />
-    <Menu
-      theme="dark"
-      mode="horizontal"
-      defaultSelectedKeys={['2']}
-      style={{ lineHeight: '64px' }}
-    >
-      <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
-      <Menu.Item key="2"><Link to="/highscores">Highscores</Link></Menu.Item>
-      <Menu.Item key="3"><Link to="/help">Help</Link></Menu.Item>
-      <Menu.Item key="4"><Link to="/download">Download</Link></Menu.Item>
-      <Menu.Item key="5"><AccountsUIWrapper /></Menu.Item>
-    </Menu>
-  </AntHeader>
+  <nav className="navbar">
+    <div className="container">
+      <div className="navbar-header">
+        <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span className="icon-bar" />
+          <span className="icon-bar" />
+          <span className="icon-bar" />
+        </button>
+        <Link className="navbar-brand" to="/">CATTS</Link>
+      </div>
+      <div className="collapse navbar-collapse" id="myNavbar">
+        <ul className="nav navbar-nav">
+          <li><Link to="/annotate">Annotate</Link></li>
+          <li><Link to="/highscores">Highscores</Link></li>
+          <li><Link to="/download">Download</Link></li>
+          <li><Link to="/help">Help</Link></li>
+        </ul>
+        <ul className="nav navbar-nav navbar-right">
+          <li><a><AccountsUIWrapper /></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 );
 
 export default Header;

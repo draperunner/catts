@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import { Button, Radio } from 'antd';
+import RaisedButton from 'material-ui/RaisedButton';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import { Tweets } from '../../../api/tweets';
 import AnnotationCounter from '../../components/AnnotationCounter';
 
@@ -67,58 +68,72 @@ class Annotation extends React.Component {
 
   render() {
     if (!this.props.currentUser) {
-      return <div><h1>Please log in</h1></div>;
+      return <div className="row"><div className="col-xs-12"><h1>Please log in</h1></div></div>;
     }
 
     const tweet = this.state.currentTweet;
 
-    const title = 'Annotation!';
+    const title = 'Annotation';
 
     if (!this.state.tweets.length && this.state.doneTweets.length > 0) {
       return (
-        <div>
-          <h1>{title}</h1>
-          <h3>No available tweets! You must have annotated them all. Great job!</h3>
+        <div className="row">
+          <div className="col-xs-12">
+            <h1>{title}</h1>
+            <h3>No available tweets! You must have annotated them all. Great job!</h3>
+          </div>
         </div>
       );
     } else if (!this.state.tweets.length && this.state.doneTweets.length === 0) {
       return (
-        <div>
-          <h1>{title}</h1>
-          <h3>Loading tweets...</h3>
+        <div className="row">
+          <div className="col-xs-12">
+            <h1>{title}</h1>
+            <h3>Loading tweets...</h3>
+          </div>
         </div>
       );
     }
 
     return (
       <div>
-        <h1>{title}</h1>
-        <h3>{ tweet ? <p key={tweet._id}>{tweet.text}</p> : null }</h3>
-        <div>
-          <Radio.Group
-            value={this.state.annotations.sentiment}
-            size="large"
-            onChange={e => this.annotate('sentiment', e.target.value)}
-          >
-            <Radio.Button value="positive" >Positive</Radio.Button>
-            <Radio.Button value="neutral">Neutral</Radio.Button>
-            <Radio.Button value="negative" >Negative</Radio.Button>
-            <Radio.Button value="none">I don't know</Radio.Button>
-          </Radio.Group>
+        <div className="row">
+          <div className="col-xs-12">
+            <h1>{title}</h1>
+            <h3>{ tweet ? <p key={tweet._id}>{tweet.text}</p> : null }</h3>
+          </div>
         </div>
-        <div>
-          <Radio.Group
-            value={this.state.annotations.sarcasm}
-            size="large"
-            onChange={e => this.annotate('sarcasm', e.target.value)}
-          >
-            <Radio.Button value="sarcastic">Sarcastic</Radio.Button>
-            <Radio.Button value="not-sarcastic" >Not Sarcastic</Radio.Button>
-            <Radio.Button value="none">I don't know</Radio.Button>
-          </Radio.Group>
+        <div className="row">
+          <div className="col-xs-12 col-md-6">
+            <h4>Sentiment Annotation</h4>
+            <RadioButtonGroup
+              name="sentiment"
+              value={this.state.annotations.sentiment}
+              size="large"
+              onChange={e => this.annotate('sentiment', e.target.value)}
+            >
+              <RadioButton value="positive" label="Positive" />
+              <RadioButton value="neutral" label="Neutral" />
+              <RadioButton value="negative" label="Negative" />
+              <RadioButton value="none" label="I don't know" />
+            </RadioButtonGroup>
+          </div>
+          <div className="col-xs-12 col-md-6">
+            <h4>Sarcasm Annotation</h4>
+            <RadioButtonGroup
+              name="sarcasm"
+              value={this.state.annotations.sarcasm}
+              size="large"
+              onChange={e => this.annotate('sarcasm', e.target.value)}
+            >
+              <RadioButton value="sarcastic" label="Sarcastic" />
+              <RadioButton value="not-sarcastic" label="Not Sarcastic" />
+              <RadioButton value="none" label="I don't know" />
+            </RadioButtonGroup>
+          </div>
         </div>
-        <div>
-          <Button type="primary" onClick={() => this.next()}>Next</Button>
+        <div className="row">
+          <RaisedButton primary onClick={() => this.next()}>Next</RaisedButton>
         </div>
         <div>
           <h1>
