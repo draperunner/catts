@@ -9,7 +9,7 @@ export const getMostFrequentAnnotation = (tweet, type) => {
 
   let mostFreqAnn = null;
   let highestFreq = -1;
-  Object.keys(ann[t]).forEach((annotation) => {
+  Object.keys(ann[t] || []).forEach((annotation) => {
     if (ann[t][annotation] > highestFreq) {
       mostFreqAnn = annotation;
       highestFreq = ann[t][annotation];

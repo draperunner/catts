@@ -25,14 +25,17 @@ const Api = new Restivus({
   prettyJson: true,
 });
 
-const createTxt = tweets => tweets.map(t => `${t._id} ${getMostFrequentAnnotation(t)}`).join('\n');
+const createTxt = tweets => tweets
+    .map(t => `${t.id_str} ${getMostFrequentAnnotation(t)}`)
+    .filter(line => line.slice(line.length - 4) !== 'null')
+    .join('\n');
 
 // Maps to: /api/tweets
 Api.addRoute('tweets', { authRequired: false }, {
   get() {
     const format = this.queryParams.format && this.queryParams.format.toLowerCase();
     const tweets = Tweets
-      .find({ annotations: { $exists: true } }, { fields: { _id: 1, 'annotations.aggregated': 1 } })
+      .find({ annotations: { $exists: true } }, { fields: { id_str: 1, 'annotations.aggregated': 1 } })
       .fetch();
 
     if (format === 'json') {
