@@ -131,7 +131,13 @@ class Annotation extends React.Component {
           </div>
         </div>
         <div className="row">
-          <RaisedButton primary onClick={() => this.next()}>Next</RaisedButton>
+          <RaisedButton
+            primary
+            disabled={!this.state.annotations.sentiment || !this.state.annotations.sarcasm}
+            onClick={() => this.next()}
+          >
+            Next
+          </RaisedButton>
         </div>
         <div>
           <h1>
