@@ -108,8 +108,7 @@ class Annotation extends React.Component {
             <h4>Sentiment Annotation</h4>
             <RadioButtonGroup
               name="sentiment"
-              value={this.state.annotations.sentiment}
-              size="large"
+              valueSelected={this.state.annotations.sentiment}
               onChange={e => this.annotate('sentiment', e.target.value)}
             >
               <RadioButton value="positive" label="Positive" />
@@ -122,8 +121,7 @@ class Annotation extends React.Component {
             <h4>Sarcasm Annotation</h4>
             <RadioButtonGroup
               name="sarcasm"
-              value={this.state.annotations.sarcasm}
-              size="large"
+              valueSelected={this.state.annotations.sarcasm}
               onChange={e => this.annotate('sarcasm', e.target.value)}
             >
               <RadioButton value="sarcastic" label="Sarcastic" />
