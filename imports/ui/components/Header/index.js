@@ -19,7 +19,7 @@ const Header = () => (
           <li><Link to="/annotate">Annotate</Link></li>
           <li><Link to="/highscores">Highscores</Link></li>
           <li><Link to="/download">Download</Link></li>
-          <li><Link to="/help">Help</Link></li>
+          <li><Link to="/guidelines">Guidelines</Link></li>
         </ul>
         <ul className="nav navbar-nav navbar-right">
           <li><a><AccountsUIWrapper /></a></li>
