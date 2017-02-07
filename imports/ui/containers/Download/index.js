@@ -8,6 +8,14 @@ const Download = () => (
       <h1>Download</h1>
     </div>
     <div className="row">
+      <div className="col-xs-12">
+        <p>
+          Here you can download annotated tweets of the type you want. The text files are in TSV (Tab Separated Values)
+          format, where the first column contains the tweet ids, and the second column their annotations.
+        </p>
+      </div>
+    </div>
+    <div className="row">
       <div className="col-xs-12 col-md-6">
         <h4>Sentiment Annotations</h4>
         <a href="/api/tweets"><FlatButton label="Text" /></a>
