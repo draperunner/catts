@@ -26,7 +26,7 @@ const Api = new Restivus({
 });
 
 const createTxt = (tweets, type) => tweets
-    .map(t => `${t.id_str} ${getMostFrequentAnnotation(t, type)}`)
+    .map(t => `${t.id_str}\t${getMostFrequentAnnotation(t, type)}`)
     .filter(line => line.slice(line.length - 4) !== 'null')
     .join('\n');
 
