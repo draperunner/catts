@@ -25,6 +25,13 @@ const Api = new Restivus({
   prettyJson: true,
 });
 
+/**
+ * Creates a TSV-formatted string from an array of tweets and an annotation type.
+ * Each line will contain a tweet's id and its most frequent annotation of the given type
+ * @param  {string[]} tweets An array of tweet ids to fetch annotations for
+ * @param  {string} type   The annotation type. For instance 'sentiment' or 'sarcasm'
+ * @return {string}        A string representing the whole TSV-formatted file
+ */
 const createTxt = (tweets, type) => tweets
     .map(t => `${t.id_str}\t${getMostFrequentAnnotation(t, type)}`)
     .filter(line => line.slice(line.length - 4) !== 'null')
