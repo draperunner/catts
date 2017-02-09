@@ -20,15 +20,20 @@ class Annotation extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.state.tweets.length || this.state.tweets.length < 3) {
-      const currTweets = this.state.tweets;
-      const doneTweets = this.state.doneTweets;
+      const { tweets, doneTweets, currentTweet } = this.state;
+
+      const processedTweets = [...tweets, ...doneTweets];
+      if (currentTweet) processedTweets.push(currentTweet);
+
+      // Filter new tweets to avoid duplicates
       const newTweets = nextProps.tweets
-        .filter(t => [...doneTweets, ...currTweets].map(ct => ct.id_str).indexOf(t.id_str) < 0);
+        .filter(newTweet => processedTweets.map(oldTweet => oldTweet.id_str).indexOf(newTweet.id_str) < 0);
 
       const newState = {
-        tweets: [...currTweets, ...newTweets],
+        tweets: [...tweets, ...newTweets],
       };
 
+      // If we're loading tweets for the very first time, pop one to become the currentTweet
       if (this.state.tweets.length === 0 && this.state.doneTweets.length === 0) {
         newState.tweets = newState.tweets.slice(1);
         newState.currentTweet = nextProps.tweets[0];
